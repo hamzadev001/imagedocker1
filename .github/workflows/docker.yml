@@ -2,7 +2,7 @@ name: Build Docker Image
 
 on:
   push:
-    branches: [ main ]  # or "master" if you're using that
+    branches: [ main ]  # or master if that's your branch
 
 jobs:
   build:
@@ -19,12 +19,12 @@ jobs:
         run: |
           docker build -t etabapp-image .
 
-      - name: Save Docker image as file
+      - name: Save Docker image to file
         run: |
           docker save etabapp-image -o image.tar
 
-      - name: Upload image as artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload Docker image as artifact
+        uses: actions/upload-artifact@v4  # ✅ use v4 here
         with:
           name: docker-image
-          path: image.tar 
+          path: image.tar
