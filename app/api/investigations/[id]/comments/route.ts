@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { auth } from '@/auth.config'
+import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { createCommentNotification } from '@/app/lib/notifications'
 
 const prisma = new PrismaClient()
@@ -44,7 +44,7 @@ export async function POST(
       ? investigation.respondedById
       : investigation.requestedById
 
-    if (receiverId) {
+    if (receiverId && investigation.title) {
       await createCommentNotification(
         params.id,
         comment.id, // comment ID
@@ -68,7 +68,19 @@ export async function POST(
 
 // Helper function to get investigation details
 async function getInvestigation(id: string) {
-  // Replace with actual implementation
-  // For now, just return null
-  return null
+  try {
+    const investigation = await prisma.investigation.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        requestedById: true,
+        respondedById: true,
+      },
+    })
+    return investigation
+  } catch (error) {
+    console.error('Error fetching investigation:', error)
+    return null
+  }
 }

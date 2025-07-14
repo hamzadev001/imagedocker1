@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { auth } from '@/auth.config'
+import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { createStatusChangeNotification } from '@/app/lib/notifications'
 
 const prisma = new PrismaClient()
@@ -115,7 +115,7 @@ export async function PUT(
 
     // If status is being updated, create a notification
     if (data.status) {
-      const statusMessages = {
+      const statusMessages: Record<string, string> = {
         PENDING: 'en attente',
         IN_PROGRESS: 'en cours',
         COMPLETED: 'terminée',
@@ -125,7 +125,7 @@ export async function PUT(
       await createStatusChangeNotification(
         params.id,
         'Statut de l\'investigation mis à jour',
-        `L'investigation est maintenant ${statusMessages[data.status]}`,
+        `L'investigation est maintenant ${statusMessages[data.status as string] || 'inconnu'}`,
         data.requestedById, // Send to the investigation requester
         session.user.id,
         data.title

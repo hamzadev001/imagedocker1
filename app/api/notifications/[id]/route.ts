@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth.config'
+import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { markNotificationAsRead } from '@/app/lib/db'
 
 export async function PUT(

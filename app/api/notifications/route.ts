@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/auth.config'
+import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { getUserNotifications, getUnreadNotifications } from '@/app/lib/db'
 
 export async function GET(request: Request) {
