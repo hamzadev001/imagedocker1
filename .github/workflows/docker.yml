@@ -1,0 +1,30 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches: [ main ]  # or "master" if you're using that
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t etabapp-image .
+
+      - name: Save Docker image as file
+        run: |
+          docker save etabapp-image -o image.tar
+
+      - name: Upload image as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: image.tar 
