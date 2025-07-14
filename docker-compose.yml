@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  app:
+    image: etablissement-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://hamzaepicness.atwebpages.com
+    restart: unless-stopped 

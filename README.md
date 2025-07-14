@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Établissement Application
 
-## Getting Started
+This is a Next.js application for managing establishments and investigations.
 
-First, run the development server:
+## Docker Installation Instructions
 
+### Prerequisites
+- Docker installed on your system
+- Port 3000 available
+
+### Running the Application
+
+1. **Load the Docker Image**
+   ```bash
+   docker load < etablissement-app.tar
+   ```
+
+2. **Run the Container**
+   ```bash
+   docker run -p 3000:3000 etablissement-app
+   ```
+
+3. **Access the Application**
+   - Open your web browser
+   - Navigate to `http://localhost:3000`
+
+### Environment Variables
+The application requires the following environment variables:
+- `NEXT_PUBLIC_API_URL`: The URL of your API (default: http://hamzaepicness.atwebpages.com)
+
+To set environment variables when running the container:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker run -p 3000:3000 -e NEXT_PUBLIC_API_URL=your_api_url etablissement-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Troubleshooting
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Port Already in Use**
+   If port 3000 is already in use, you can map to a different port:
+   ```bash
+   docker run -p 3001:3000 etablissement-app
+   ```
+   Then access the application at `http://localhost:3001`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Container Not Starting**
+   Check the logs:
+   ```bash
+   docker logs <container_id>
+   ```
 
-## Learn More
+3. **Permission Issues**
+   If you encounter permission issues, try running with sudo (Linux/Mac) or as administrator (Windows)
 
-To learn more about Next.js, take a look at the following resources:
+### Stopping the Application
+To stop the container:
+```bash
+docker stop <container_id>
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To find the container ID:
+```bash
+docker ps
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Support
+If you encounter any issues, please contact the development team.

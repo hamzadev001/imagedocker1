@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  password      String
+  role          Role          @default(CONTROLLER)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  investigations Investigation[] @relation("RequestedBy")
+  responses     Investigation[] @relation("RespondedBy")
+  comments      Comment[]
+  notifications Notification[] @relation("NotificationReceiver")
+  notificationsSent Notification[] @relation("NotificationSender")
+}
+
+model Establishment {
+  id                  String         @id @default(cuid())
+  commune             String
+  name                String
+  natureEtablissement String
+  gestionnaire        String
+  directeur          String?
+  contact            String?
+  latitude           Float?
+  longitude          Float?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  investigations     Investigation[]
+}
+
+model Investigation {
+  id              String         @id @default(cuid())
+  title           String
+  description     String
+  status          Status        @default(PENDING)
+  requestedById   String
+  requestedBy     User          @relation("RequestedBy", fields: [requestedById], references: [id])
+  respondedById   String?
+  respondedBy     User?         @relation("RespondedBy", fields: [respondedById], references: [id])
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  comments        Comment[]
+  notifications   Notification[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Comment {
+  id              String       @id @default(cuid())
+  content         String
+  userId          String
+  user            User         @relation(fields: [userId], references: [id])
+  investigationId String
+  investigation   Investigation @relation(fields: [investigationId], references: [id])
+  notifications   Notification[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Notification {
+  id              String         @id @default(cuid())
+  type            NotificationType
+  title           String
+  message         String
+  isRead          Boolean       @default(false)
+  receiverId      String
+  receiver        User          @relation("NotificationReceiver", fields: [receiverId], references: [id])
+  senderId        String
+  sender          User          @relation("NotificationSender", fields: [senderId], references: [id])
+  investigationId String?
+  investigation   Investigation? @relation(fields: [investigationId], references: [id])
+  commentId       String?
+  comment         Comment?      @relation(fields: [commentId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum Role {
+  ADMIN
+  CONTROLLER
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
+
+enum NotificationType {
+  INVESTIGATION_CREATED
+  INVESTIGATION_STATUS_CHANGED
+  COMMENT_ADDED
+  PROFILE_UPDATED
+}
